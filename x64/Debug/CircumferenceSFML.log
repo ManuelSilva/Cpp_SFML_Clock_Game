@@ -1,0 +1,60 @@
+﻿  centeredCircle.cpp
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  centeredLabel.cpp
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\centeredLabel.cpp(24,25): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  gameManager.cpp
+  main.cpp
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(56,12): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(85,33): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(171,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(60,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(65,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(66,19): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(69,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(92,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(113,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(129,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(19,92): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(19,80): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(20,97): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(20,82): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+  mainTimerLabel.cpp
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(56,12): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(85,33): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\mainTimerLabel.h(171,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  playerCircle.cpp
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Generating Code...
+  CircumferenceSFML.vcxproj -> C:\Users\Manuel Silva\source\repos\CircumferenceSFML\x64\Debug\CircumferenceSFML.exe
