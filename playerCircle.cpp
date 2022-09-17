@@ -18,27 +18,37 @@ void playerCircle::InitOnce()
 		projectiles[i].Init();
 	}
 
-	m_currentTheta = -F_PI / 2.0f;
+	m_currentTheta = (100 * F_2PI ) + START_RAD;
+	playerTween2 = m_currentTheta;
 }
 
 
 void playerCircle::AutoMove()
 {
-	const float startPos = -F_PI / 2.0f;
 	int sec = g_GameManager.systemClock.tm_sec;
-	m_currentTheta = startPos;
 
-	auto secDelta = (sec * 2 * F_PI) / 60.0f;
-	auto msDelta = (g_GameManager.currentMs * 2 * F_PI) / 60.0f;
+	auto secDelta = (sec * F_2PI) / 60.0f;
+	auto msDelta = (g_GameManager.currentMs * F_2PI) / 60.0f;
 
-	m_currentTheta = startPos + secDelta + msDelta;
+	float value = START_RAD + secDelta + msDelta;
+	int numberOfSpins = playerTween2 / F_2PI;
+	float target = value + ((numberOfSpins) * (F_2PI));
+
+	if (m_finishedSettingSeconds)
+	{
+		m_currentTheta = target;
+	}
+	else
+	{
+		m_currentTheta = gameManager::TweenValue(playerTween2, target, playerTween2ElapsedTime, 0.5f, EEasingFunc::CubicEaseOut, m_finishedSettingSeconds);
+	}
 }
 
 
 float playerCircle::SimulateMovePlayer(float addedAcceleration, float delta)
 {
-	m_velocity *= DRAG;
-	m_velocity += addedAcceleration * delta;
+	//m_velocity *= DRAG;
+	m_velocity = -addedAcceleration * delta;
 
 	if (std::abs(m_velocity) > MAX_VELOCITY)
 	{
@@ -62,6 +72,23 @@ void playerCircle::OnUpdate()
 	const float EPSILON = 0.001f;
 	float delta = g_GameManager.deltaTime;
 
+	if (g_GameManager.gameState == EMainGameState::TransitionPart1)
+	{
+		int numberOfSpins = playerTween1 / F_2PI;
+		float target = START_RAD + ((numberOfSpins - 2) * (F_2PI));
+
+		bool ignore;
+		m_currentTheta = gameManager::TweenValue(playerTween1, target, playerTween1ElapsedTime, .2f, EEasingFunc::CubicEaseOut, ignore);
+		shape.setPosition(getPosition());
+
+		if (std::abs(std::abs(m_currentTheta) - std::abs(target)) < 0.001f)
+		{
+			g_GameManager.gameState = EMainGameState::MainGameMode;
+		}
+
+		return;
+	}
+
 	float addedAcceleration = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -75,6 +102,14 @@ void playerCircle::OnUpdate()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
+		if (g_GameManager.gameState == EMainGameState::ClockMode)
+		{
+			g_GameManager.gameState = EMainGameState::TransitionPart1;
+			playerTween1 = m_currentTheta;
+			playerTween1ElapsedTime = 0;
+			return;
+		}
+
 		//Shoot();
 		if (!m_PressedShootButton)
 		{
@@ -101,6 +136,10 @@ void playerCircle::OnUpdate()
 	}
 	else
 	{
+		playerTween2 = m_currentTheta;
+		playerTween2ElapsedTime = 0;
+		m_finishedSettingSeconds = false;
+
 		m_currentTheta += SimulateMovePlayer(addedAcceleration, delta);
 	}
 	shape.setPosition(getPosition());

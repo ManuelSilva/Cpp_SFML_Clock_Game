@@ -1,6 +1,8 @@
 #pragma once
 #include "centeredCircle.h"
 #define F_PI (355.0f / 113.0f)
+#define F_2PI (2*F_PI)
+#define START_RAD (3*F_PI/2)
 
 class projectile : public centeredCircle
 {
@@ -65,9 +67,9 @@ class playerCircle : public centeredCircle
 	const float SIZE_FACTOR = 30;
 
 	// Player Speed
-	const float ACCELERATION = 20;
+	const float ACCELERATION = 500;
 	const float MAX_VELOCITY = 5;
-	const float DRAG = 0.99f;
+	const float DRAG = 1.0f;
 
 	static const int AMMO_COUNT = 200;
 	projectile projectiles[AMMO_COUNT]{};
@@ -75,8 +77,14 @@ class playerCircle : public centeredCircle
 	float m_velocity = 0;
 	bool m_PressedShootButton = false;
 
+	float playerTween1 = 0;
+	float playerTween1ElapsedTime = 0;
+
+	float playerTween2 = 0;
+	float playerTween2ElapsedTime = 0;
+	bool m_finishedSettingSeconds = false;
 public:
-	float m_currentTheta = 90;
+	float m_currentTheta;
 
 private:
 

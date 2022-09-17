@@ -27,6 +27,12 @@ int main()
 	auto gameTimerAreaSplit4 = gameTimerArea.getNewLayout(3.0f / 5.0f, 0, 4.0f / 5.0f, 1.0f, sf::Color::Magenta);
 	auto gameTimerAreaSplit5 = gameTimerArea.getNewLayout(4.0f / 5.0f, 0, 5.0f / 5.0f, 1.0f, sf::Color::Blue);
 
+	auto ammoBarLayoutArea = rightOfBaseSquareLayout.getNewLayout(0.95f, sf::Color::Magenta);
+	auto ammoBarLayoutArea1 = ammoBarLayoutArea.getNewLayout(0,0,1.0f/5.0f,1.0f, sf::Color::Black);
+	auto ammoBarLayoutArea2 = ammoBarLayoutArea.getNewLayout(1.0f / 5.0f, 0, 2.0f / 5.0f, 1.0f, sf::Color::White);
+	auto ammoBarLayoutArea3 = ammoBarLayoutArea.getNewLayout(2.0f / 5.0f, 0, 1.0f, 1.0f, sf::Color::Black);
+
+
 	float centerHelperWidth = 0.005f;
 	auto centerHelper1 = rootLayout.getNewLayout(0.5f - centerHelperWidth, 0.0f, 0.5f + centerHelperWidth, 1.0f, sf::Color::Red);
 	auto centerHelper2 = rootLayout.getNewLayout(0.0f, 0.5f - centerHelperWidth, 1.0f, 0.5f + centerHelperWidth, sf::Color::Red);
@@ -39,6 +45,11 @@ int main()
 				&baseSquareLayout,
 					&leftOfBaseSquareLayout,
 					&rightOfBaseSquareLayout,
+						&ammoBarLayoutArea,
+							&ammoBarLayoutArea1,
+							&ammoBarLayoutArea2,
+							&ammoBarLayoutArea3,
+
 					&square97,
 						&squareInsideMainCircle,
 							&gameTimerArea,
@@ -61,7 +72,7 @@ int main()
 	centeredLabel timerLabel(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerArea);
 	centeredLabel timerLabelSec1(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit4);
 	centeredLabel timerLabelSec2(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit5);
-	mainTimerText timerObj(120, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
+	mainTimerText timerObj(1000 * 3, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
 
 	centeredCircle mainCircle(&square97);
 	playerCircle player(&square97);

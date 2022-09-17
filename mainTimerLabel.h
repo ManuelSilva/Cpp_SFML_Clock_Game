@@ -25,11 +25,20 @@ class mainTimerText : public gameObject
 	int previousValue3 = 0;
 	int previousValue4 = 0;
 
+	//Clock
 	int m_Tween1 = 0;
 	float m_Tween1TimeElapsed = 0;
-
+	//Clock
 	int m_Tween2 = 0;
 	float m_Tween2TimeElapsed = 0;
+
+	// Game
+	int m_Tween3 = 0;
+	float m_Tween3TimeElapsed = 0;
+
+	// Game Blink
+	int m_Tween4 = 0;
+	float m_Tween4TimeElapsed = 0;
 
 public:
 
@@ -51,40 +60,6 @@ public:
 		secondsLabel2->label.setString("0");
 	}
 
-	float EasingFunction(float x)
-	{
-		return x < 0.5 ? 16 * std::pow(x, 5) : 1 - std::pow(-2 * x + 2, 5) / 2;
-		//return  x * x * x;
-	}
-
-	int GetValue(int& from, int to, float& timeElapsed, float speed)
-	{
-		int aux = std::abs(std::abs(from) - std::abs(to));
-		if (aux == 0)
-		{
-			timeElapsed = 0;
-			return to;
-		}
-
-		if (aux == 1)
-		{
-			timeElapsed = 0;
-			from = to;
-			return to;
-		}
-
-		timeElapsed += g_GameManager.deltaTime * speed;
-		if (timeElapsed > 1.0f)
-		{
-			timeElapsed = 0;
-			from = to;
-			return to;
-		}
-
-		float easedT = EasingFunction(timeElapsed);
-		return (1.0f - easedT) * from + easedT * to;
-	}
-
 	void OnResize() override
 	{
 		minutesLabel1->OnResize();
@@ -101,164 +76,120 @@ public:
 		centerLabel->OnUpdate();
 		secondsLabel1->OnUpdate();
 		secondsLabel2->OnUpdate();
-		float frquency = 1900;
+
 		bool isClock = g_GameManager.gameState == EMainGameState::ClockMode;
 
 		if (isClock)
 		{
+			m_Tween3 = g_GameManager.systemClock.tm_hour * 60 + g_GameManager.systemClock.tm_sec;
 			minutesLabel1->enabled = enabled;
 			minutesLabel2->enabled = enabled;
 			secondsLabel1->enabled = enabled;
 			secondsLabel2->enabled = enabled;
 
-			auto tempHoursDigit = GetValue(m_Tween1, g_GameManager.systemClock.tm_hour, m_Tween1TimeElapsed, .25f);
+			auto tempHoursDigit = gameManager::TweenValue(m_Tween1, g_GameManager.systemClock.tm_hour, m_Tween1TimeElapsed, .5f, EEasingFunc::QuinticInAndOut);
 			auto hoursDigit1 = tempHoursDigit / 10;
 			auto hoursDigit2 = tempHoursDigit % 10;
-
-			if (previousValue1 != hoursDigit1)
-			{
-				previousValue1 = hoursDigit1;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-				}	
-			}
-
-			if (previousValue2 != hoursDigit2)
-			{
-				previousValue2 = hoursDigit2;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-				}
-			}
 
 			minutesLabel1->label.setString(std::to_string(hoursDigit1));
 			minutesLabel2->label.setString(std::to_string(hoursDigit2));
 
+			centerLabel->enabled = enabled;
 			centerLabel->label.setString(":");
 
-			auto tempMinutesDigit = GetValue(m_Tween2, g_GameManager.systemClock.tm_min, m_Tween2TimeElapsed, .25f);
+			auto tempMinutesDigit = gameManager::TweenValue(m_Tween2, g_GameManager.systemClock.tm_min, m_Tween2TimeElapsed, .25f, EEasingFunc::QuinticInAndOut);
 			auto minDigit1 = tempMinutesDigit / 10;
 			auto minDigit2 = tempMinutesDigit % 10;
 
 			secondsLabel1->label.setString(std::to_string(minDigit1));
 			secondsLabel2->label.setString(std::to_string(minDigit2));
 
-			if (previousValue3 != minDigit1)
-			{
-				previousValue3 = minDigit1;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-				}
-			}
-
-			if (previousValue4 != minDigit2)
-			{
-				previousValue4 = minDigit2;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-				}
-			}
-
 			OnResize();
 			return;
 		}
 
 
-		int timeElapsed = time.getElapsedTime().asSeconds();
-		int currentTime = startingTime - timeElapsed;
-
-		if (currentTime < 0)
+		int gameStartTime = time.getElapsedTime().asMilliseconds();
+		int currentTime = (startingTime) - gameStartTime;
+		auto currentTimeTemp = 0;
+		if (g_GameManager.gameState != EMainGameState::MainGameMode)
 		{
+			time.restart();
+			currentTime = startingTime;
+			currentTimeTemp = gameManager::TweenValue(m_Tween3, currentTime, m_Tween3TimeElapsed, 0.3f, EEasingFunc::Linear);
+		}
+		else
+		{
+			currentTimeTemp = currentTime;
+		}
+
+		if (currentTime < 0 && currentTimeTemp < 0)
+		{
+			minutesLabel1->enabled = false;
+			minutesLabel2->enabled = false;
+			secondsLabel1->enabled = false;
+			secondsLabel2->enabled = false;
+			int secondsForBlink = g_GameManager.currentTime.asMilliseconds() / 200;
+ 			if ((secondsForBlink % 2) == 0)
+			{
+				centerLabel->enabled = false;
+			}
+			else
+			{
+				centerLabel->enabled = enabled;
+			}
+
+			if (currentTime < -3000)
+			{
+				g_GameManager.gameState = EMainGameState::ClockMode;
+			}
+
 			centerLabel->label.setString("game over");
 			OnResize();
 			return;
 		}
 
-		int minutes = currentTime / 60;
-		int secondsRemaining = currentTime - minutes * 60;
+		int minutes = currentTimeTemp / 1000;
+		int secondsRemaining = ((currentTimeTemp / 10) % 100) * .6f;
 
 		int seconds1 = secondsRemaining / 10;
 		int seconds2 = secondsRemaining % 10;
 
-		int minutes1 = (minutes / 10) % 10;
-		int minutes2 = minutes % 10;
-
-		if (currentTime > 16)
+		//if (currentTimeTemp > 0)
 		{
 			minutesLabel1->enabled = enabled;
 			minutesLabel2->enabled = enabled;
 			secondsLabel1->enabled = enabled;
 			secondsLabel2->enabled = enabled;
 
-			auto tempMinutesDigit1 = GetValue(m_Tween1, minutes, m_Tween1TimeElapsed, .25f);
-			auto minutesDigit1 = tempMinutesDigit1 / 10;
-			auto minutesDigit2 = tempMinutesDigit1 % 10;
+			int secondsForBlink = g_GameManager.currentTime.asMilliseconds() / 200;
+			if (currentTimeTemp == startingTime && (secondsForBlink % 2) == 0)
+			{
+				minutesLabel1->enabled = false;
+				minutesLabel2->enabled = false;
+				secondsLabel1->enabled = false;
+				secondsLabel2->enabled = false;
+			}
+
+			auto minutesDigit1 = minutes / 10;
+			auto minutesDigit2 = minutes % 10;
 
 			minutesLabel1->label.setString(std::to_string(minutesDigit1));
 			minutesLabel2->label.setString(std::to_string(minutesDigit2));
 
-			if (previousValue1 != minutesDigit1)
-			{
-				previousValue1 = minutesDigit1;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-					//Beep(frquency, 10);
-				}
-			}
-
-			if (previousValue2 != minutesDigit2)
-			{
-				previousValue2 = minutesDigit2;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-					//Beep(frquency, 10);
-				}
-			}
-
-
 			centerLabel->label.setString(":");
 
-			auto tempSecondsDigit = GetValue(m_Tween2, secondsRemaining, m_Tween2TimeElapsed, .5f);
-			auto secDigit1 = tempSecondsDigit / 10;
-			auto secDigit2 = tempSecondsDigit % 10;
-
-			secondsLabel1->label.setString(std::to_string(secDigit1));
-			secondsLabel2->label.setString(std::to_string(secDigit2));
-
-			if (previousValue3 != secDigit1)
-			{
-				previousValue3 = secDigit1;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-					//Beep(frquency, 10);
-				}
-			}
-
-			if (previousValue4 != secDigit2)
-			{
-				previousValue4 = secDigit2;
-				if (g_GameManager.clackSoundFx->getStatus() != sf::SoundSource::Status::Playing)
-				{
-					//g_GameManager.clackSoundFx->play();
-					//Beep(frquency, 10);
-				}
-			}
+			secondsLabel1->label.setString(std::to_string(seconds1));
+			secondsLabel2->label.setString(std::to_string(seconds2));
 		}
-		else
+		//else
 		{
-			minutesLabel1->enabled = false;
-			minutesLabel2->enabled = false;
-			secondsLabel1->enabled = false;
-			secondsLabel2->enabled = false;
+			//minutesLabel1->enabled = false;
+			//minutesLabel2->enabled = false;
+			//secondsLabel1->enabled = false;
+			//secondsLabel2->enabled = false;
 
-			centerLabel->label.setString(std::to_string(currentTime));
+			//centerLabel->label.setString(std::to_string(currentTime));
 		}
 
 		OnResize();

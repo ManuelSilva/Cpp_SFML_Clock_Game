@@ -5,7 +5,16 @@
 enum EMainGameState
 {
 	ClockMode = 0,
-	MainGameMode = 1,
+	TransitionPart1 = 1, // set player in proper position
+	MainGameMode = 2,
+};
+
+enum EEasingFunc
+{
+	Linear = 0,
+	QuinticInAndOut = 1,
+	CubicEaseOut = 2,
+	CubicEaseIn = 3,
 };
 
 enum ESupportedFonts
@@ -13,6 +22,9 @@ enum ESupportedFonts
 	Xirod = 0,
 };
 
+struct gameManager;
+
+extern gameManager g_GameManager;
 
 struct gameManager
 {
@@ -61,6 +73,65 @@ public:
 #endif
 		return bt;
 	}
-};
 
-extern gameManager g_GameManager;
+	static float EasingFunction(EEasingFunc func, float x)
+	{
+		switch (func)
+		{
+		case EEasingFunc::CubicEaseIn:
+			return x * x * x;
+		case EEasingFunc::CubicEaseOut:
+			return 1 - std::pow(1 - x, 3);
+		case EEasingFunc::QuinticInAndOut:
+			return x < 0.5 ? 16 * std::pow(x, 5) : 1 - std::pow(-2 * x + 2, 5) / 2;		
+		case EEasingFunc::Linear:
+		default:
+			return x;
+		}
+
+	}
+
+	static int TweenValue(int& from, int to, float& timeElapsed, float speed, EEasingFunc func)
+	{
+		int aux = std::abs(std::abs(from) - std::abs(to));
+		if (aux == 0)
+		{
+			timeElapsed = 0;
+			return to;
+		}
+
+		if (aux == 1)
+		{
+			timeElapsed = 0;
+			from = to;
+			return to;
+		}
+
+		timeElapsed += g_GameManager.deltaTime * speed;
+		if (timeElapsed > 1.0f)
+		{
+			timeElapsed = 0;
+			from = to;
+			return to;
+		}
+
+		float easedT = EasingFunction(func, timeElapsed);
+		return (1.0f - easedT) * from + easedT * to;
+	}
+
+	static float TweenValue(float& from, float to, float& timeElapsed, float speed, EEasingFunc func, bool& arrived)
+	{
+		timeElapsed += g_GameManager.deltaTime * speed;
+		if (timeElapsed > 1.0f)
+		{
+			arrived = true;
+			timeElapsed = 0;
+			from = to;
+			return to;
+		}
+
+		float easedT = EasingFunction(func, timeElapsed);
+		return (1.0f - easedT) * from + easedT * to;
+	}
+
+};

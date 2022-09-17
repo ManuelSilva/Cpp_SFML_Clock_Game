@@ -8,11 +8,11 @@ class clockLines : public gameObject
 
 	struct lineState
 	{
-		bool isLocked;
-		float currentDelta;
+		bool isLocked = false;
+		float currentDelta = 0.0f;
 	};
 
-	lineState states[360]{ false };
+	lineState states[360]{ };
 
 public:
 	clockLines(Layout* layout, playerCircle* player) : playerRef(player),  gameObject(layout)
@@ -134,7 +134,7 @@ public:
 
 	bool MoveLinesAside(int theta, int i, int thetaAdjust, float testF, sf::Vector2f& v, float smallestSize, bool shouldLock, lineState* state)
 	{
-		int range = 6;//6
+		int range = 5;//6
 		int currentAngleStart = mod(theta - range, 360);
 		int currentAngleEnd = mod(theta + range, 360);
 		int indexedAngle = mod((i + thetaAdjust), 360);
@@ -162,7 +162,7 @@ public:
 
 				if (std::abs(std::abs(diff) - std::abs(strength)) < 0.1f)
 				{
-					state->isLocked = true;
+					state->isLocked = shouldLock;
 					state->currentDelta = 0;
 				}
 
@@ -191,7 +191,7 @@ public:
 
 				if (std::abs(std::abs(diff) - std::abs( strength)) < 0.1f)
 				{
-					state->isLocked = true;
+					state->isLocked = shouldLock;
 					state->currentDelta = 0;
 				}
 				
@@ -206,7 +206,7 @@ public:
 			}
 		}
 
-		if (startPos < baseStartPos && startPos > 0)
+		if (state->isLocked && startPos < baseStartPos && startPos > 0)
 		{
 			state->currentDelta += g_GameManager.deltaTime * 0.3f;
 		}
@@ -219,7 +219,11 @@ public:
 protected:
 	void InitOnce() override
 	{
+#if _DEBUG
+		line.setFillColor(sf::Color::Red);
+#else
 		line.setFillColor(sf::Color::Green);
+#endif
 		OnResize();
 	}
 
