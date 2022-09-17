@@ -40,7 +40,7 @@ void playerCircle::AutoMove()
 	}
 	else
 	{
-		m_currentTheta = gameManager::TweenValue(playerTween2, target, playerTween2ElapsedTime, 0.5f, EEasingFunc::CubicEaseOut, m_finishedSettingSeconds);
+		m_currentTheta = gameManager::TweenValue(playerTween2, target, playerTween2ElapsedTime, 0.3f, EEasingFunc::CubicEaseOut, m_finishedSettingSeconds);
 	}
 }
 
