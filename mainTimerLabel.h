@@ -78,6 +78,7 @@ public:
 		secondsLabel2->OnUpdate();
 
 		bool isClock = g_GameManager.gameState == EMainGameState::ClockMode;
+		centerLabel->enabled = enabled;
 
 		if (isClock)
 		{
@@ -94,7 +95,6 @@ public:
 			minutesLabel1->label.setString(std::to_string(hoursDigit1));
 			minutesLabel2->label.setString(std::to_string(hoursDigit2));
 
-			centerLabel->enabled = enabled;
 			centerLabel->label.setString(":");
 
 			auto tempMinutesDigit = gameManager::TweenValue(m_Tween2, g_GameManager.systemClock.tm_min, m_Tween2TimeElapsed, .25f, EEasingFunc::QuinticInAndOut);
@@ -110,7 +110,7 @@ public:
 
 
 		int gameStartTime = time.getElapsedTime().asMilliseconds();
-		int currentTime = (startingTime) - gameStartTime;
+		int currentTime = (startingTime) - gameStartTime + g_GameManager.wonTime;
 		auto currentTimeTemp = 0;
 		if (g_GameManager.gameState != EMainGameState::MainGameMode)
 		{
@@ -129,7 +129,7 @@ public:
 			minutesLabel2->enabled = false;
 			secondsLabel1->enabled = false;
 			secondsLabel2->enabled = false;
-			int secondsForBlink = g_GameManager.currentTime.asMilliseconds() / 200;
+			int secondsForBlink = (g_GameManager.currentTime * 1000) / 200;
  			if ((secondsForBlink % 2) == 0)
 			{
 				centerLabel->enabled = false;
@@ -142,6 +142,7 @@ public:
 			if (currentTime < -3000)
 			{
 				g_GameManager.gameState = EMainGameState::ClockMode;
+				g_GameManager.wonTime = 0;
 			}
 
 			centerLabel->label.setString("game over");
@@ -162,7 +163,7 @@ public:
 			secondsLabel1->enabled = enabled;
 			secondsLabel2->enabled = enabled;
 
-			int secondsForBlink = g_GameManager.currentTime.asMilliseconds() / 200;
+			int secondsForBlink = (g_GameManager.currentTime * 1000) / 200;
 			if (currentTimeTemp == startingTime && (secondsForBlink % 2) == 0)
 			{
 				minutesLabel1->enabled = false;

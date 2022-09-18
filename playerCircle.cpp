@@ -27,6 +27,12 @@ void playerCircle::AutoMove()
 {
 	int sec = g_GameManager.systemClock.tm_sec;
 
+	if (prevSec > sec && !m_finishedSettingSeconds)
+	{
+		sec += 60;
+	}
+
+	prevSec = sec;
 	auto secDelta = (sec * F_2PI) / 60.0f;
 	auto msDelta = (g_GameManager.currentMs * F_2PI) / 60.0f;
 
@@ -40,7 +46,7 @@ void playerCircle::AutoMove()
 	}
 	else
 	{
-		m_currentTheta = gameManager::TweenValue(playerTween2, target, playerTween2ElapsedTime, 0.3f, EEasingFunc::CubicEaseOut, m_finishedSettingSeconds);
+		m_currentTheta = gameManager::TweenValue(playerTween2, target, playerTween2ElapsedTime, 0.4f, EEasingFunc::QuinticInAndOut, m_finishedSettingSeconds);
 	}
 }
 
@@ -69,6 +75,12 @@ sf::Vector2f playerCircle::calculatePosition(float theta)
 
 void playerCircle::OnUpdate()
 {
+	for (int i = 0; i < AMMO_COUNT; ++i)
+	{
+		auto projectile = &projectiles[i];
+		projectile->OnUpdate();
+	}
+
 	const float EPSILON = 0.001f;
 	float delta = g_GameManager.deltaTime;
 
@@ -88,17 +100,38 @@ void playerCircle::OnUpdate()
 
 		return;
 	}
-
-	float addedAcceleration = 0;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if (g_GameManager.gameState == EMainGameState::ClockMode)
 	{
-		addedAcceleration += ACCELERATION;
+		AutoMove();
+
+
+		if (!m_finishedSettingSeconds)
+		{
+			shape.setPosition(getPosition());
+			return;
+		}
+	}
+	else
+	{
+		playerTween2 = m_currentTheta;
+		playerTween2ElapsedTime = 0;
+		m_finishedSettingSeconds = false;
+
+		float addedAcceleration = 0;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			addedAcceleration += ACCELERATION;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			addedAcceleration -= ACCELERATION;
+		}
+
+
+		m_currentTheta += SimulateMovePlayer(addedAcceleration, delta);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		addedAcceleration -= ACCELERATION;
-	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
@@ -107,20 +140,25 @@ void playerCircle::OnUpdate()
 			g_GameManager.gameState = EMainGameState::TransitionPart1;
 			playerTween1 = m_currentTheta;
 			playerTween1ElapsedTime = 0;
+
+			shape.setPosition(getPosition());
 			return;
 		}
 
-		//Shoot();
-		if (!m_PressedShootButton)
+		if (g_GameManager.gameState == EMainGameState::MainGameMode)
 		{
-			m_PressedShootButton = true;
-			for (int i = 0; i < AMMO_COUNT; ++i)
+			//Shoot();
+			if (!m_PressedShootButton)
 			{
-				auto projectile = &projectiles[i];
-				if (!projectile->enabled)
+				m_PressedShootButton = true;
+				for (int i = 0; i < AMMO_COUNT; ++i)
 				{
-					projectile->InitBullet(m_currentTheta);
-					break;
+					auto projectile = &projectiles[i];
+					if (!projectile->enabled)
+					{
+						projectile->InitBullet(m_currentTheta);
+						break;
+					}
 				}
 			}
 		}
@@ -130,25 +168,7 @@ void playerCircle::OnUpdate()
 		m_PressedShootButton = false;
 	}
 
-	if (g_GameManager.gameState == EMainGameState::ClockMode)
-	{
-		AutoMove();
-	}
-	else
-	{
-		playerTween2 = m_currentTheta;
-		playerTween2ElapsedTime = 0;
-		m_finishedSettingSeconds = false;
-
-		m_currentTheta += SimulateMovePlayer(addedAcceleration, delta);
-	}
 	shape.setPosition(getPosition());
-
-	for (int i = 0; i < AMMO_COUNT; ++i)
-	{
-		auto projectile = &projectiles[i];
-		projectile->OnUpdate();
-	}
 }
 
 void playerCircle::OnRender()

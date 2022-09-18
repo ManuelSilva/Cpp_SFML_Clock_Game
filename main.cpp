@@ -72,7 +72,7 @@ int main()
 	centeredLabel timerLabel(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerArea);
 	centeredLabel timerLabelSec1(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit4);
 	centeredLabel timerLabelSec2(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit5);
-	mainTimerText timerObj(1000 * 3, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
+	mainTimerText timerObj(1000 * 10, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
 
 	centeredCircle mainCircle(&square97);
 	playerCircle player(&square97);
@@ -94,13 +94,16 @@ int main()
 	}
 
 	sf::RenderWindow& window = g_GameManager.window;
+	window.setVerticalSyncEnabled(true);
+
+	g_GameManager.currentTime = g_GameManager.mainClock.getElapsedTime().asSeconds();
 
 	while (window.isOpen())
 	{
 		g_GameManager.UpdateClock();
 
 #if _DEBUG
-		window.setTitle("FPS: " + std::to_string(1/g_GameManager.deltaTime));
+		window.setTitle("FPS: " + std::to_string(1/g_GameManager.frameTime));
 #endif
 		// get player input
 		g_GameManager.PollEvents();
@@ -130,17 +133,34 @@ int main()
 			g_GameManager.m_resizeUpdate = false;
 		}
 
+
+		while (g_GameManager.accumulator >= g_GameManager.deltaTime)
+		{
+			g_GameManager.systemClock = g_GameManager.localtime_xp(std::time(0));
+			if (g_GameManager.systemClock.tm_sec != g_GameManager.currentSec)
+			{
+				g_GameManager.currentSec = g_GameManager.systemClock.tm_sec;
+				g_GameManager.currentMs = 0;
+			}
+			else
+			{
+				g_GameManager.currentMs += g_GameManager.deltaTime;
+			}
+
+			// update logic
+			for (auto obj : staticObjects)
+			{
+				obj->OnUpdate();
+			}
+			g_GameManager.accumulator -= g_GameManager.deltaTime;
+			g_GameManager.currentTime += g_GameManager.deltaTime;
+		}
+
+
 		for (auto layout : layoutSet)
 		{
 			layout->DebugRender();
 		}
-
-		// update logic
-		for (auto obj : staticObjects)
-		{
-			obj->OnUpdate();
-		}
-
 		// render it to the window
 		for (auto obj : staticObjects)
 		{

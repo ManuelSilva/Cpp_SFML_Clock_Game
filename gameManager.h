@@ -40,14 +40,19 @@ struct gameManager
 	std::unique_ptr<sf::SoundBuffer> clackSoundBuffer;
 	std::unique_ptr<sf::Sound> clackSoundFx;
 
-	float deltaTime;
+	const float deltaTime = 1/240.0f;
+	float frameTime = 0.0f;
+	float accumulator = 0.0f;
 
 	sf::Clock mainClock;
 	sf::Time previousTime;
-	sf::Time currentTime;
+	float currentTime;
+	sf::Time frameCurrentTime;
 	std::tm systemClock;
 	int currentSec;
 	float currentMs; // 0 to 1 value
+
+	int wonTime = 0;
 	
 	EMainGameState gameState = EMainGameState::ClockMode	;
 	bool m_resizeUpdate;
@@ -123,6 +128,15 @@ public:
 	{
 		timeElapsed += g_GameManager.deltaTime * speed;
 		if (timeElapsed > 1.0f)
+		{
+			arrived = true;
+			timeElapsed = 0;
+			from = to;
+			return to;
+		}
+
+		int aux = std::abs(std::abs(from) - std::abs(to));
+		if (aux < 0.001f)
 		{
 			arrived = true;
 			timeElapsed = 0;

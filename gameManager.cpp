@@ -44,22 +44,10 @@ int gameManager::Init()
 
 void gameManager::UpdateClock()
 {
-	systemClock = localtime_xp(std::time(0));
-	
-	currentTime = mainClock.getElapsedTime();
-	deltaTime = (currentTime.asSeconds() - previousTime.asSeconds());
-	previousTime = currentTime;
-
-	if (systemClock.tm_sec != currentSec)
-	{
-		currentSec = systemClock.tm_sec;
-		currentMs = 0;
-	}
-	else
-	{
-		currentMs += deltaTime;
-	}
-
+	frameCurrentTime = mainClock.getElapsedTime();
+	frameTime = (frameCurrentTime.asSeconds() - previousTime.asSeconds());
+	previousTime = frameCurrentTime;
+	accumulator += frameTime;
 }
 
 void gameManager::PollEvents()

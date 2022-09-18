@@ -2,14 +2,14 @@
 
 class clockLines : public gameObject
 {
-	sf::RectangleShape line{};
-
 	playerCircle* playerRef;
 
 	struct lineState
 	{
 		bool isLocked = false;
 		float currentDelta = 0.0f;
+		int lineSize = 0;
+		sf::RectangleShape line{};
 	};
 
 	lineState states[360]{ };
@@ -47,17 +47,7 @@ public:
 
 	void OnUpdate() override
 	{
-	}
-
-	int mod(int a, int b)
-	{
-		return (a % b + b) % b;
-	}
-
-	void OnRender() override
-	{
 		bool shouldLock = g_GameManager.gameState != EMainGameState::ClockMode;
-		int seconds = g_GameManager.currentTime.asSeconds();
 		auto smallestSize = layout->getSmallestSize();
 
 		float radians = playerRef->m_currentTheta;
@@ -81,20 +71,19 @@ public:
 			}
 
 			sf::Vector2f v = { smallestSize / 2.2f, 0 };
-			line.setSize({ smallestSize / 75, smallestSize / 75 });
-			sf::Vector2f og = { line.getSize().x / 2.0f, line.getSize().y / 2.0f };
+			states[i].line.setSize({ smallestSize / 75, smallestSize / 75 });
+			sf::Vector2f og = { states[i].line.getSize().x / 2.0f, states[i].line.getSize().y / 2.0f };
 
 			//if
 			(MoveLinesAside(theta, i, thetaAdjust, testF, v, smallestSize, shouldLock, &states[i]));
 			{
-				line.setOrigin(og + v);
-				line.setPosition(layout->getCenter());
-				line.setRotation(i + seconds * 0);
-				g_GameManager.window.draw(line);
+				states[i].line.setOrigin(og + v);
+				states[i].line.setPosition(layout->getCenter());
+				states[i].line.setRotation(i);
 			}
 		}
 
-		for (int i= 0; i < 360; i+=15)
+		for (int i = 0; i < 360; i += 15)
 		{
 			if (i % 30 == 0)
 			{
@@ -102,18 +91,16 @@ public:
 			}
 
 			sf::Vector2f v = { smallestSize / 2.2f, 0 };
-			
+
 			//if
 			(MoveLinesAside(theta, i, thetaAdjust, testF, v, smallestSize, shouldLock, &states[i]));
 			{
-				line.setSize({ smallestSize / 50, smallestSize / 50 });
-				sf::Vector2f og = { line.getSize().x / 2.0f, line.getSize().y / 2.0f };
-				line.setOrigin(og + v);
-				line.setPosition(layout->getCenter());
-				line.setRotation(i + seconds* 0);
-
-				g_GameManager.window.draw(line);
-			}		
+				states[i].line.setSize({ smallestSize / 50, smallestSize / 50 });
+				sf::Vector2f og = { states[i].line.getSize().x / 2.0f, states[i].line.getSize().y / 2.0f };
+				states[i].line.setOrigin(og + v);
+				states[i].line.setPosition(layout->getCenter());
+				states[i].line.setRotation(i);
+			}
 		}
 
 		for (int i = 0; i < 360; i += 30)
@@ -122,13 +109,24 @@ public:
 
 			MoveLinesAside(theta, i, thetaAdjust, testF, v, smallestSize, shouldLock, &states[i]);
 
-			line.setSize({ smallestSize / 25, smallestSize / 50 });
-			sf::Vector2f og = { line.getSize().x / 2.0f, line.getSize().y / 2.0f };
-			line.setOrigin(og + v);
-			line.setPosition(layout->getCenter());
-			line.setRotation(i + seconds * 0);
+			states[i].line.setSize({ smallestSize / 25, smallestSize / 50 });
+			sf::Vector2f og = { states[i].line.getSize().x / 2.0f, states[i].line.getSize().y / 2.0f };
+			states[i].line.setOrigin(og + v);
+			states[i].line.setPosition(layout->getCenter());
+			states[i].line.setRotation(i);
+		}
+	}
 
-			g_GameManager.window.draw(line);
+	int mod(int a, int b)
+	{
+		return (a % b + b) % b;
+	}
+
+	void OnRender() override
+	{
+		for (int i = 0; i < 360; i += 5)
+		{
+			g_GameManager.window.draw(states[i].line);			
 		}
 	}
 
@@ -219,11 +217,15 @@ public:
 protected:
 	void InitOnce() override
 	{
+		for (int i = 0; i < 360; i += 5)
+		{
 #if _DEBUG
-		line.setFillColor(sf::Color::Red);
+			states[i].line.setFillColor(sf::Color::Red);
 #else
-		line.setFillColor(sf::Color::Green);
+			states[i].line.setFillColor(sf::Color::Green);
 #endif
+		}
+
 		OnResize();
 	}
 

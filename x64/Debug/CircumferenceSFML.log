@@ -1,13 +1,14 @@
 ﻿  playerCircle.cpp
 C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameObject.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(84,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(86,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(119,33): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(89,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(91,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(124,33): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\gameManager.h(138,11): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\layout.h(94,40): warning C4244: 'argument': conversion from 'T' to 'unsigned int', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\playerCircle.cpp(34,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\playerCircle.cpp(77,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\playerCircle.cpp(40,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\playerCircle.cpp(89,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   CircumferenceSFML.vcxproj -> C:\Users\Manuel Silva\source\repos\CircumferenceSFML\x64\Debug\CircumferenceSFML.exe

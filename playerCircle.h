@@ -1,6 +1,6 @@
 #pragma once
 #include "centeredCircle.h"
-#define F_PI (355.0f / 113.0f)
+#define F_PI (3.141592653589793115997963468544185161590576171875f)
 #define F_2PI (2*F_PI)
 #define START_RAD (3*F_PI/2)
 
@@ -46,6 +46,7 @@ public:
 		// Check for collisions
 		if (curreentRadius < 0.001f)
 		{
+			//g_GameManager.wonTime += 200;
 			enabled = false;
 		}
 
@@ -71,11 +72,14 @@ class playerCircle : public centeredCircle
 	const float MAX_VELOCITY = 5;
 	const float DRAG = 1.0f;
 
-	static const int AMMO_COUNT = 200;
+	static const int AMMO_COUNT = 100;
 	projectile projectiles[AMMO_COUNT]{};
 
 	float m_velocity = 0;
 	bool m_PressedShootButton = false;
+
+	int prevSec = 0;
+
 
 	float playerTween1 = 0;
 	float playerTween1ElapsedTime = 0;
