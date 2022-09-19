@@ -223,7 +223,7 @@ float playerCircle::getRadius()
 float enemyBullet::getRadius()
 {
 	auto bulletRadius = centeredCircle::getRadius() / SIZE_FACTOR;
-	auto aux = bulletRadius * (m_currentRadius) * 3;
+	auto aux = bulletRadius * (m_currentRadius - 0.05f) * 3;
 	aux = std::min(aux, bulletRadius);
 	return aux;
 }
@@ -247,8 +247,16 @@ void enemyBullet::OnUpdate()
 {
 	if (m_currentRadius > 1.0f)
 	{
-		m_currentRadius = 0.0f;
+		m_currentRadius = 0.05f;
+		numberOfTimesSpawned++;
+		startTheta += (numberOfTimesSpawned)*(1.1f + F_PI/10.0f);
+		if (startTheta == INFINITY )
+		{
+			startTheta = 10000;
+		}
 		shape.setPosition(getPosition());
+
+		g_GameManager.wonTime -= 3000.0f;
 		return;
 	}
 
@@ -270,6 +278,11 @@ void enemySpawner::OnResize()
 
 void enemySpawner::OnUpdate()
 {
+	if (g_GameManager.gameState != EMainGameState::MainGameMode)
+	{
+		return;
+	}
+
 	for (int i = 0; i < ENEMY_COUNT; ++i)
 	{
 		enemies[i].OnUpdate();
@@ -278,6 +291,11 @@ void enemySpawner::OnUpdate()
 
 void enemySpawner::OnRender()
 {
+	if (g_GameManager.gameState != EMainGameState::MainGameMode)
+	{
+		return;
+	}
+
 	for (int i = 0; i < ENEMY_COUNT; ++i)
 	{
 		enemies[i].OnRender();

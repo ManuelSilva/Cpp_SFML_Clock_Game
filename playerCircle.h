@@ -6,7 +6,7 @@
 
 class projectile : public centeredCircle
 {
-	const float SIZE_FACTOR = 40.0f;
+	const float SIZE_FACTOR = 30.0f;
 	const float SPEED_FACTOR = 2.0f;
 
 	float currentTheta;
@@ -16,7 +16,7 @@ protected:
 	float getRadius() override
 	{
 		auto bulletRadius = centeredCircle::getRadius() / SIZE_FACTOR;
-		bulletRadius *= curreentRadius;
+		bulletRadius *= curreentRadius * 1.5f;
 		return bulletRadius;
 	}
 
@@ -45,11 +45,12 @@ public:
 		curreentRadius -= SPEED_FACTOR * g_GameManager.deltaTime;
 
 		// Check for collisions
-		if (curreentRadius < 0.001f)
+		if (curreentRadius < 0.2f)
 		{
 			//g_GameManager.wonTime += 200;
 			enabled = false;
 		}
+
 		auto bulletSize = getRadius();
 		shape.setRadius(bulletSize);
 		shape.setOrigin(bulletSize, bulletSize);
@@ -125,11 +126,13 @@ class enemyBullet : public centeredCircle
 {
 	const float SIZE_FACTOR = 25;
 
-	float startTheta = START_RAD + F_PI;
-
 public:
 
-	float m_currentRadius = 0;
+	int numberOfTimesSpawned = 0;
+
+	float startTheta = START_RAD + F_PI;
+
+	float m_currentRadius = 0.05f;
 	
 	enemyBullet() : centeredCircle(sf::Color::Red, sf::Color::Transparent, 0, 50, nullptr)
 	{
@@ -156,7 +159,7 @@ public:
 class enemySpawner : public gameObject
 {
 public:
-	static const int ENEMY_COUNT = 100;
+	static const int ENEMY_COUNT = 3;
 	enemyBullet enemies[ENEMY_COUNT]{};
 
 	enemySpawner(Layout* layout) : gameObject(layout)
@@ -164,6 +167,7 @@ public:
 		for (int i = 0; i < ENEMY_COUNT; ++i)
 		{
 			enemies[i].layout = layout;
+			enemies[i].numberOfTimesSpawned = (i+1) * F_PI / 3.0f;
 		}
 	}
 

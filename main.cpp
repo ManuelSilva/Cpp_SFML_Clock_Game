@@ -39,6 +39,11 @@ void UpdateCollisions(enemySpawner& spawner, playerCircle& player)
 				continue;
 			}
 
+			if (enemy->m_currentRadius < 0.051f)
+			{
+				continue;
+			}
+
 			auto distanceX = enemy->shape.getPosition().x - bullet->shape.getPosition().x;
 			distanceX *= distanceX;
 			auto distanceY = enemy->shape.getPosition().y - bullet->shape.getPosition().y;
@@ -52,14 +57,17 @@ void UpdateCollisions(enemySpawner& spawner, playerCircle& player)
 				bullet->shape.getPosition().y,
 				bullet->shape.getRadius()))
 			{
-				enemy->m_currentRadius = 0;
 				hitTargets = true;
+				enemy->m_currentRadius = 0.05f;
+				enemy->numberOfTimesSpawned++;
+				enemy->startTheta += (enemy->numberOfTimesSpawned) * 1.1f;
 			}
 		}
 
 		if (hitTargets)
 		{
 			bullet->enabled = false;
+			g_GameManager.wonTime += 1500;
 		}
 	}
 }
@@ -128,7 +136,7 @@ int main()
 	centeredLabel timerLabel(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerArea);
 	centeredLabel timerLabelSec1(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit4);
 	centeredLabel timerLabelSec2(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit5);
-	mainTimerText timerObj(1000 * 100, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
+	mainTimerText timerObj(1000 * 5, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
 
 	centeredCircle mainCircle(&square97);
 	mainCircle.drawDebug = false;
@@ -206,13 +214,13 @@ int main()
 			}
 
 
+			UpdateCollisions(spawner, player);
+
 			// update logic
 			for (auto obj : staticObjects)
 			{
 				obj->OnUpdate();
 			}
-
-			UpdateCollisions(spawner, player);
 
 			g_GameManager.accumulator -= g_GameManager.deltaTime;
 			g_GameManager.currentTime += g_GameManager.deltaTime;
