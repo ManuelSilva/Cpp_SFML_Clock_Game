@@ -140,9 +140,14 @@ public:
 
 		const float baseStartPos = 2.2f;
 		float startPos = baseStartPos - state->currentDelta;
-		if (shouldLock && state->isLocked)
+		if ((shouldLock && state->isLocked) || (state->isLocked && state->currentDelta > 0.01f))
 		{
 			startPos = startPos - strength;
+		}
+
+		if (g_GameManager.gameState == EMainGameState::MainGameMode)
+		{
+			state->isLocked = true;
 		}
 
 		if (currentAngleStart > currentAngleEnd)
