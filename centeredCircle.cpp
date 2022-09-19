@@ -60,5 +60,23 @@ void centeredCircle::OnRender()
 	if (enabled)
 	{
 		g_GameManager.window.draw(shape);
+
+
+#if _DEBUG
+		auto rect = shape.getGlobalBounds();
+		sf::ConvexShape debugShape{ 4 };
+		debugShape.setPoint(0, { rect.left, rect.top });
+		debugShape.setPoint(1, { rect.left, rect.top + rect.height });
+		debugShape.setPoint(2, { rect.left + rect.width, rect.top + rect.height});
+		debugShape.setPoint(3, { rect.left + rect.width, rect.top });
+		debugShape.setFillColor({static_cast<sf::Uint8>(255 - _fillColor.r), static_cast<sf::Uint8>(255 - _fillColor.g), 255/3, 255});
+		
+		if (drawDebug)
+		{
+			g_GameManager.window.draw(debugShape);
+		}
+#endif
+
+		g_GameManager.window.draw(shape);
 	}
 }

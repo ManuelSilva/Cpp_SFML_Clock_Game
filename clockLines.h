@@ -130,6 +130,14 @@ public:
 		}
 	}
 
+
+	static int AngleDifference(int angle1, int angle2)
+	{
+		int aux = (angle2 - angle1 + 180);
+		int diff = (aux % 360) - 180;
+		return std::abs(diff < -180 ? diff + 360 : diff);
+	}
+
 	bool MoveLinesAside(int theta, int i, int thetaAdjust, float testF, sf::Vector2f& v, float smallestSize, bool shouldLock, lineState* state)
 	{
 		int range = 5;//6
@@ -150,10 +158,19 @@ public:
 			state->isLocked = true;
 		}
 
+		float distance = 1.0f - ((AngleDifference(indexedAngle, testF) / 180.0f)) - (state->currentDelta)/3.0f;
+		if (distance < 0)
+		{
+			distance = 0;
+		}
+#if _DEBUG
+		state->line.setFillColor(sf::Color(255, 0, 0, distance * 255));
+#else
+		state->line.setFillColor(sf::Color(0, 255, 0, distance * 255));
+#endif
+		float angleDiff = std::abs(testF - std::abs(indexedAngle));
 		if (currentAngleStart > currentAngleEnd)
 		{
-			float angleDiff = std::abs(testF - std::abs(indexedAngle));
-
 			if (indexedAngle >= currentAngleStart && indexedAngle <= 360 || indexedAngle >= 0 && indexedAngle <= currentAngleEnd)
 			{
 				if (angleDiff > 300)
@@ -181,8 +198,6 @@ public:
 		}
 		else
 		{
-			float angleDiff = std::abs(testF - std::abs(indexedAngle));
-
 			if (indexedAngle >= currentAngleStart && indexedAngle <= currentAngleEnd)
 			{
 				if (angleDiff > 300)
@@ -192,7 +207,7 @@ public:
 
 				auto diff = strength * ((range - angleDiff) / range);
 
-				if (std::abs(std::abs(diff) - std::abs( strength)) < 0.1f)
+				if (std::abs(std::abs( diff ) - std::abs( strength )) < 0.1f)
 				{
 					state->isLocked = shouldLock;
 					state->currentDelta = 0;
@@ -203,12 +218,11 @@ public:
 					diff = 0;
 				}
 
-
 				v = { smallestSize / (startPos - diff), 0 };
 				return true;
 			}
 		}
-
+		
 		if (state->isLocked && startPos < baseStartPos && startPos > 0)
 		{
 			state->currentDelta += g_GameManager.deltaTime * 0.3f;
@@ -222,15 +236,6 @@ public:
 protected:
 	void InitOnce() override
 	{
-		for (int i = 0; i < 360; i += 5)
-		{
-#if _DEBUG
-			states[i].line.setFillColor(sf::Color::Red);
-#else
-			states[i].line.setFillColor(sf::Color::Green);
-#endif
-		}
-
 		OnResize();
 	}
 

@@ -16,6 +16,7 @@ protected:
 	float getRadius() override
 	{
 		auto bulletRadius = centeredCircle::getRadius() / SIZE_FACTOR;
+		bulletRadius *= curreentRadius;
 		return bulletRadius;
 	}
 
@@ -49,7 +50,9 @@ public:
 			//g_GameManager.wonTime += 200;
 			enabled = false;
 		}
-
+		auto bulletSize = getRadius();
+		shape.setRadius(bulletSize);
+		shape.setOrigin(bulletSize, bulletSize);
 		shape.setPosition(getPosition());
 	}
 
@@ -58,6 +61,7 @@ public:
 		curreentRadius = 1.0f;
 		currentTheta = theta;
 		enabled = true;
+		shape.setPosition(getPosition());
 	}
 
 };
@@ -72,8 +76,6 @@ class playerCircle : public centeredCircle
 	const float MAX_VELOCITY = 5;
 	const float DRAG = 1.0f;
 
-	static const int AMMO_COUNT = 100;
-	projectile projectiles[AMMO_COUNT]{};
 
 	float m_velocity = 0;
 	bool m_PressedShootButton = false;
@@ -88,6 +90,8 @@ class playerCircle : public centeredCircle
 	float playerTween2ElapsedTime = 0;
 	bool m_finishedSettingSeconds = false;
 public:
+	static const int AMMO_COUNT = 100;
+	projectile projectiles[AMMO_COUNT]{};
 	float m_currentTheta;
 
 private:
@@ -119,12 +123,19 @@ protected:
 
 class enemyBullet : public centeredCircle
 {
-	const float SIZE_FACTOR = 20;
+	const float SIZE_FACTOR = 25;
 
-	float startTheta = 0;
+	float startTheta = START_RAD + F_PI;
+
+public:
 
 	float m_currentRadius = 0;
-public:
+	
+	enemyBullet() : centeredCircle(sf::Color::Red, sf::Color::Transparent, 0, 50, nullptr)
+	{
+
+	}
+
 	enemyBullet(Layout* layout) : centeredCircle(sf::Color::Red, sf::Color::Transparent, 0, 50, layout)
 	{
 
@@ -140,4 +151,31 @@ protected:
 public:
 
 	void OnUpdate() override;
+};
+
+class enemySpawner : public gameObject
+{
+public:
+	static const int ENEMY_COUNT = 100;
+	enemyBullet enemies[ENEMY_COUNT]{};
+
+	enemySpawner(Layout* layout) : gameObject(layout)
+	{
+		for (int i = 0; i < ENEMY_COUNT; ++i)
+		{
+			enemies[i].layout = layout;
+		}
+	}
+
+	void OnResize() override;
+
+
+	void OnUpdate() override;
+
+
+	void OnRender() override;
+
+protected:
+	void InitOnce() override;
+
 };

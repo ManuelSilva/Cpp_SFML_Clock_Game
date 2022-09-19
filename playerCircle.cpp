@@ -177,6 +177,17 @@ void playerCircle::OnRender()
 	{
 		g_GameManager.window.draw(shape);
 
+#if _DEBUG
+		auto rect = shape.getGlobalBounds();
+		sf::ConvexShape debugShape{ 4 };
+		debugShape.setPoint(0, { rect.left, rect.top });
+		debugShape.setPoint(1, { rect.left, rect.top + rect.height });
+		debugShape.setPoint(2, { rect.left + rect.width, rect.top + rect.height });
+		debugShape.setPoint(3, { rect.left + rect.width, rect.top });
+		debugShape.setFillColor({ static_cast<sf::Uint8>(255 - _fillColor.r), static_cast<sf::Uint8>(255 - _fillColor.g), 255 / 3, 255 });
+		g_GameManager.window.draw(debugShape);
+#endif
+
 		for (int i = 0; i < AMMO_COUNT; ++i)
 		{
 			auto projectile = &projectiles[i];
@@ -212,7 +223,9 @@ float playerCircle::getRadius()
 float enemyBullet::getRadius()
 {
 	auto bulletRadius = centeredCircle::getRadius() / SIZE_FACTOR;
-	return bulletRadius;
+	auto aux = bulletRadius * (m_currentRadius) * 3;
+	aux = std::min(aux, bulletRadius);
+	return aux;
 }
 
 sf::Vector2f enemyBullet::calculatePosition(float theta)
@@ -239,6 +252,42 @@ void enemyBullet::OnUpdate()
 		return;
 	}
 
-	m_currentRadius += g_GameManager.deltaTime * .4f;
+	m_currentRadius += g_GameManager.deltaTime * .2f;
+
+	auto bulletSize = getRadius();
+	shape.setRadius(bulletSize);
+	shape.setOrigin(bulletSize, bulletSize);
 	shape.setPosition(getPosition());
+}
+
+void enemySpawner::OnResize()
+{
+	for (int i = 0; i < ENEMY_COUNT; ++i)
+	{
+		enemies[i].OnResize();
+	}
+}
+
+void enemySpawner::OnUpdate()
+{
+	for (int i = 0; i < ENEMY_COUNT; ++i)
+	{
+		enemies[i].OnUpdate();
+	}
+}
+
+void enemySpawner::OnRender()
+{
+	for (int i = 0; i < ENEMY_COUNT; ++i)
+	{
+		enemies[i].OnRender();
+	}
+}
+
+void enemySpawner::InitOnce()
+{
+	for (int i = 0; i < ENEMY_COUNT; ++i)
+	{
+		enemies[i].Init();
+	}
 }

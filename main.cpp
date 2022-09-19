@@ -9,6 +9,62 @@
 
 gameManager g_GameManager;
 
+bool checkCircleCollision(float x1, float y1, float r1, float x2, float y2, float r2)
+{
+	return std::abs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < (r1 + r2) * (r1 + r2);
+}
+
+void UpdateCollisions(enemySpawner& spawner, playerCircle& player)
+{
+	if (g_GameManager.gameState != EMainGameState::MainGameMode)
+	{
+		return;
+	}
+
+	for (int j = 0; j < player.AMMO_COUNT; ++j)
+	{
+		auto bullet = &player.projectiles[j];
+		if (!bullet->enabled)
+		{
+			continue;
+		}
+
+		bool hitTargets = false;
+
+		for (int i = 0; i < spawner.ENEMY_COUNT; ++i)
+		{
+			auto enemy = &spawner.enemies[i];
+			if (!enemy->enabled)
+			{
+				continue;
+			}
+
+			auto distanceX = enemy->shape.getPosition().x - bullet->shape.getPosition().x;
+			distanceX *= distanceX;
+			auto distanceY = enemy->shape.getPosition().y - bullet->shape.getPosition().y;
+			distanceY *= distanceY;
+			auto distanceSquared = distanceX + distanceY;
+			if (checkCircleCollision(
+				enemy->shape.getPosition().x,
+				enemy->shape.getPosition().y,
+				enemy->shape.getRadius(),
+				bullet->shape.getPosition().x,
+				bullet->shape.getPosition().y,
+				bullet->shape.getRadius()))
+			{
+				enemy->m_currentRadius = 0;
+				hitTargets = true;
+			}
+		}
+
+		if (hitTargets)
+		{
+			bullet->enabled = false;
+		}
+	}
+}
+
+
 int main()
 {
 	g_GameManager.Init();
@@ -72,12 +128,14 @@ int main()
 	centeredLabel timerLabel(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerArea);
 	centeredLabel timerLabelSec1(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit4);
 	centeredLabel timerLabelSec2(ESupportedFonts::Xirod, sf::Text::Bold, sf::Color::Green, &gameTimerAreaSplit5);
-	mainTimerText timerObj(1000 * 10, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
+	mainTimerText timerObj(1000 * 100, &timerLabel, &timerLabelMin1, &timerLabelMin2, &timerLabelSec1, &timerLabelSec2);
 
 	centeredCircle mainCircle(&square97);
+	mainCircle.drawDebug = false;
+
 	playerCircle player(&square97);
 	clockLines line(&square97, &player);
-	enemyBullet bullet(&square97);
+	enemySpawner spawner(&square97);
 
 	gameObject* staticObjects[]
 	{
@@ -85,7 +143,7 @@ int main()
 		&mainCircle,
 		&player,
 		&line,
-		//&bullet,
+		&spawner,
 	};
 
 	for (auto obj : staticObjects)
@@ -147,11 +205,15 @@ int main()
 				g_GameManager.currentMs += g_GameManager.deltaTime;
 			}
 
+
 			// update logic
 			for (auto obj : staticObjects)
 			{
 				obj->OnUpdate();
 			}
+
+			UpdateCollisions(spawner, player);
+
 			g_GameManager.accumulator -= g_GameManager.deltaTime;
 			g_GameManager.currentTime += g_GameManager.deltaTime;
 		}

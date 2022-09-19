@@ -9,6 +9,7 @@ public:
 	float _outlineThickness = 0.03f;
 	int _numberOfPoints = 150;
 	sf::CircleShape shape{};
+	bool drawDebug = false;
 
 	centeredCircle(Layout* layout);
 

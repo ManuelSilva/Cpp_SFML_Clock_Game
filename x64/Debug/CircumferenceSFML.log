@@ -18,8 +18,10 @@ C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLine
 C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(82,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(102,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(116,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(19,92): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(19,80): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(20,97): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(20,82): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(161,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\clockLines.h(167,58): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(75,92): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(75,80): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(76,97): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\Manuel Silva\source\repos\CircumferenceSFML\CircumferenceSFML\main.cpp(76,82): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
   CircumferenceSFML.vcxproj -> C:\Users\Manuel Silva\source\repos\CircumferenceSFML\x64\Debug\CircumferenceSFML.exe
