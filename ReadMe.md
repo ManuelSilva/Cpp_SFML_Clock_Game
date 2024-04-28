@@ -17,4 +17,4 @@ Might reuse or iterate on the ideas explored here in later projects.
 
 
 ## License
-This project is provided under [appropriate license]. Please refer to the LICENSE file in the repository for more details.
+This project is provided under [MIT License]. Please refer to the LICENSE file in the repository for more details.
