@@ -2,10 +2,15 @@
 
 ## Project Overview
 This project is an unfinished C++ application built with SFML (Simple and Fast Multimedia Library). 
-The initial idea was to create a clock/game with a dynamic layout system. 
-Although the project didn't reach completion due to lack of direction, one notable achievement was the development of a robust layout system that allows the application to scale properly to any screen size.
+
+Initial idea was learning SFML by reimagining a game I made in python years ago.
+Although the project didn't reach completion due to loss of interest, it achieved its goal of familiarizing me with the library.
+One notable achievement was the development of a robust layout system that allows the application to scale properly to any screen size.
 Might reuse or iterate on the ideas explored here in later projects.
 
+
+## Clock/Game 
+![Layout Debug View](./Clock.gif)
 
 ## Layout Debug View Mode
 ![Layout Debug View](./ClockLayout.gif)
