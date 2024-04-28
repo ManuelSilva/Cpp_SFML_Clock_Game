@@ -98,8 +98,8 @@ int main()
 
 
 	float centerHelperWidth = 0.005f;
-	auto centerHelper1 = rootLayout.getNewLayout(0.5f - centerHelperWidth, 0.0f, 0.5f + centerHelperWidth, 1.0f, sf::Color::Red);
-	auto centerHelper2 = rootLayout.getNewLayout(0.0f, 0.5f - centerHelperWidth, 1.0f, 0.5f + centerHelperWidth, sf::Color::Red);
+	//auto centerHelper1 = rootLayout.getNewLayout(0.5f - centerHelperWidth, 0.0f, 0.5f + centerHelperWidth, 1.0f, sf::Color::Red);
+	//auto centerHelper2 = rootLayout.getNewLayout(0.0f, 0.5f - centerHelperWidth, 1.0f, 0.5f + centerHelperWidth, sf::Color::Red);
 
 	// make sure leafs are last
 	Layout* layoutSet[] =
@@ -122,8 +122,8 @@ int main()
 								&gameTimerAreaSplit3,
 								&gameTimerAreaSplit4,
 								&gameTimerAreaSplit5,
-			&centerHelper1,
-			&centerHelper2
+			//&centerHelper1,
+			//&centerHelper2
 	};
 
 	for (auto layout : layoutSet)
@@ -164,6 +164,7 @@ int main()
 
 	g_GameManager.currentTime = g_GameManager.mainClock.getElapsedTime().asSeconds();
 
+	auto oldS = window.getSize();
 	while (window.isOpen())
 	{
 		g_GameManager.UpdateClock();
@@ -179,9 +180,16 @@ int main()
 
 
 		// idea make screen shrink and dissapear (by percentage) when you re in the last 5-10 seconds
-		//auto oldS = window.getSize();
-		//auto newS = sf::Vector2u( static_cast<unsigned int>(0.9999f * oldS.x), static_cast<unsigned int>(.9999f * oldS.y));
-		//window.setSize(newS);
+		float x = (cos(g_GameManager.currentTime / 3) + 1.1f) / 2 * oldS.x;
+		float y = (sin(g_GameManager.currentTime / 3) + 1.1f) / 2 * oldS.y;
+
+		if (x < 200)
+		{
+			x = 200;
+		}
+
+		auto newS = sf::Vector2u( static_cast<unsigned int>(x), static_cast<unsigned int>(y));
+		window.setSize(newS);
 
 		if (g_GameManager.m_resizeUpdate)
 		{
